@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev:*)",
+      "Bash(BROWSER=none npm start)",
+      "Bash(BROWSER=none PORT=3001 npm start)",
+      "Bash(lsof:*)",
+      "Bash(npm install:*)",
+      "Bash(node server.js:*)",
+      "Bash(curl:*)",
+      "Bash(pkill:*)",
+      "Bash(xargs:*)",
+      "Bash(node:*)",
+      "Bash(npm run build:*)"
+    ]
+  }
+}
