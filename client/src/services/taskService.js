@@ -30,6 +30,16 @@ const taskService = {
   async getStats() {
     const { data } = await api.get('/tasks/stats');
     return data.stats;
+  },
+
+  async archiveTask(id) {
+    const { data } = await api.put(`/tasks/${id}/archive`);
+    return data;
+  },
+
+  async unarchiveTask(id) {
+    const { data } = await api.put(`/tasks/${id}/unarchive`);
+    return data;
   }
 };
 

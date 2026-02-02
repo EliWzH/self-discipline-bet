@@ -97,8 +97,8 @@ exports.createTask = async (req, res, next) => {
       });
       await task.save();
 
-      // 锁定赌注
-      wallet.lockedAmount += betAmount;
+      // 锁定赌注（确保数字相加）
+      wallet.lockedAmount = Number(wallet.lockedAmount) + Number(betAmount);
       wallet.transactions.push({
         type: '任务锁定',
         amount: -betAmount,
@@ -145,8 +145,8 @@ exports.getTasks = async (req, res, next) => {
       const wallet = await Wallet.findOne({ userId });
 
       for (const instance of newInstances) {
-        wallet.balance -= instance.betAmount;
-        wallet.lockedAmount += instance.betAmount;
+        wallet.balance = Number(wallet.balance) - Number(instance.betAmount);
+        wallet.lockedAmount = Number(wallet.lockedAmount) + Number(instance.betAmount);
       }
       await wallet.save();
     }
@@ -160,6 +160,16 @@ exports.getTasks = async (req, res, next) => {
     }
 
     const filter = { userId, templateTask: false };
+
+    // 默认不返回已存档的任务，除非明确请求
+    if (req.query.archived === 'true') {
+      filter.archived = true;
+    } else if (req.query.archived === 'all') {
+      // 不过滤archived字段
+    } else {
+      filter.archived = { $ne: true };
+    }
+
     if (status) filter.status = status;
     if (category) filter.category = category;
 
@@ -227,8 +237,8 @@ const autoFailExpiredTasks = async (userId) => {
     // 扣除锁定的赌注
     const wallet = await Wallet.findOne({ userId });
     if (wallet) {
-      wallet.lockedAmount -= task.betAmount;
-      wallet.totalDonated += task.betAmount;
+      wallet.lockedAmount = Number(wallet.lockedAmount) - Number(task.betAmount);
+      wallet.totalDonated = Number(wallet.totalDonated) + Number(task.betAmount);
       wallet.transactions.push({
         type: '任务失败',
         amount: -task.betAmount,
@@ -262,7 +272,7 @@ exports.getTaskById = async (req, res, next) => {
   }
 };
 
-// 开始任务
+// 开始任务（已废弃 - 任务创建后直接进入进行中状态）
 exports.startTask = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -274,14 +284,7 @@ exports.startTask = async (req, res, next) => {
       return res.status(404).json({ error: '任务不存在' });
     }
 
-    if (task.status !== TaskStatus.PENDING) {
-      return res.status(400).json({ error: '任务状态不正确' });
-    }
-
-    task.status = TaskStatus.IN_PROGRESS;
-    task.startedAt = new Date();
-    await task.save();
-
+    // 任务创建后已经是进行中状态，直接返回
     res.json({
       success: true,
       task
@@ -328,7 +331,7 @@ exports.getStats = async (req, res, next) => {
   }
 };
 
-// 删除任务（仅待开始状态）
+// 删除任务（仅未提交的进行中任务）
 exports.deleteTask = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -340,14 +343,15 @@ exports.deleteTask = async (req, res, next) => {
       return res.status(404).json({ error: '任务不存在' });
     }
 
-    if (task.status !== TaskStatus.PENDING) {
-      return res.status(400).json({ error: '只能删除待开始的任务' });
+    // 只能删除进行中且未提交的任务
+    if (task.status !== TaskStatus.IN_PROGRESS) {
+      return res.status(400).json({ error: '只能删除进行中的任务' });
     }
 
     // 解锁赌注
     const wallet = await Wallet.findOne({ userId });
-    wallet.lockedAmount -= task.betAmount;
-    wallet.balance += task.betAmount;
+    wallet.lockedAmount = Number(wallet.lockedAmount) - Number(task.betAmount);
+    wallet.balance = Number(wallet.balance) + Number(task.betAmount);
     wallet.transactions.push({
       type: '任务解锁',
       amount: task.betAmount,
@@ -508,8 +512,8 @@ exports.createTaskFromTemplate = async (req, res, next) => {
       });
       await task.save();
 
-      // 锁定赌注
-      wallet.lockedAmount += template.betAmount;
+      // 锁定赌注（确保数字相加）
+      wallet.lockedAmount = Number(wallet.lockedAmount) + Number(template.betAmount);
       wallet.transactions.push({
         type: '任务锁定',
         amount: -template.betAmount,
@@ -549,6 +553,61 @@ exports.deleteTemplate = async (req, res, next) => {
     res.json({
       success: true,
       message: '模板已删除'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// 存档任务
+exports.archiveTask = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user._id;
+
+    const task = await Task.findOne({ _id: id, userId });
+
+    if (!task) {
+      return res.status(404).json({ error: '任务不存在' });
+    }
+
+    // 只能存档失败或已完成的任务
+    if (task.status !== TaskStatus.FAILED && task.status !== TaskStatus.COMPLETED) {
+      return res.status(400).json({ error: '只能存档已失败或已完成的任务' });
+    }
+
+    task.archived = true;
+    await task.save();
+
+    res.json({
+      success: true,
+      message: '任务已存档',
+      task
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// 取消存档任务
+exports.unarchiveTask = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user._id;
+
+    const task = await Task.findOne({ _id: id, userId });
+
+    if (!task) {
+      return res.status(404).json({ error: '任务不存在' });
+    }
+
+    task.archived = false;
+    await task.save();
+
+    res.json({
+      success: true,
+      message: '任务已取消存档',
+      task
     });
   } catch (error) {
     next(error);

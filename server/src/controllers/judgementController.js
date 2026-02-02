@@ -59,9 +59,9 @@ exports.judgeTask = async (req, res, next) => {
     if (status === 'approved') {
       task.status = TaskStatus.COMPLETED;
 
-      // 解锁并返还赌注
-      wallet.balance += task.betAmount;
-      wallet.lockedAmount -= task.betAmount;
+      // 解锁并返还赌注（确保数字相加）
+      wallet.balance = Number(wallet.balance) + Number(task.betAmount);
+      wallet.lockedAmount = Number(wallet.lockedAmount) - Number(task.betAmount);
       wallet.transactions.push({
         type: '任务成功返还',
         amount: task.betAmount,
@@ -71,9 +71,9 @@ exports.judgeTask = async (req, res, next) => {
     } else {
       task.status = TaskStatus.FAILED;
 
-      // 扣除赌注
-      wallet.lockedAmount -= task.betAmount;
-      wallet.totalDonated += task.betAmount;
+      // 扣除赌注（确保数字相加）
+      wallet.lockedAmount = Number(wallet.lockedAmount) - Number(task.betAmount);
+      wallet.totalDonated = Number(wallet.totalDonated) + Number(task.betAmount);
       wallet.transactions.push({
         type: '任务失败扣款',
         amount: -task.betAmount,
@@ -125,14 +125,16 @@ exports.getJudgementResult = async (req, res, next) => {
   }
 };
 
-// 获取待我审判的任务列表（包括进行中和已提交的）
+// 获取待我审判的任务列表（包括进行中和已提交的，过滤掉失败的任务）
 exports.getTasksToJudge = async (req, res, next) => {
   try {
     const judgeUserId = req.user._id;
 
-    // 获取所有我作为判决人的任务（进行中、已提交、待判决）
+    // 获取所有我作为判决人的任务（进行中、已提交、待判决），排除失败和已存档的任务
     const tasks = await Task.find({
       judgeUserId,
+      status: { $ne: TaskStatus.FAILED }, // 排除失败的任务
+      archived: { $ne: true }, // 排除已存档的任务
       $or: [
         { status: TaskStatus.IN_PROGRESS },
         { status: TaskStatus.SUBMITTED, judgeStatus: 'pending' }

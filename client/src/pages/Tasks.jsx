@@ -131,6 +131,16 @@ const Tasks = () => {
     }
   };
 
+  const handleArchiveTask = async (taskId) => {
+    try {
+      await taskService.archiveTask(taskId);
+      toast.success('任务已存档');
+      fetchTasks();
+    } catch (error) {
+      toast.error(error.response?.data?.error || '存档任务失败');
+    }
+  };
+
   if (loading) {
     return <div className="text-white">加载中...</div>;
   }
@@ -242,9 +252,20 @@ const Tasks = () => {
           {tasks.map((task) => (
             <div
               key={task._id}
-              className="bg-dark-card rounded-lg p-6 border border-dark-border hover:border-dark-hover transition"
+              className="bg-dark-card rounded-lg p-6 border border-dark-border hover:border-dark-hover transition relative"
             >
-              <div className="flex items-start justify-between mb-4">
+              {/* 存档按钮 - 只在失败或完成的任务显示 */}
+              {(task.status === TASK_STATUS.FAILED || task.status === TASK_STATUS.COMPLETED) && (
+                <button
+                  onClick={() => handleArchiveTask(task._id)}
+                  className="absolute top-4 right-4 px-3 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded-lg transition"
+                  title="存档任务"
+                >
+                  📁 存档
+                </button>
+              )}
+
+              <div className="flex items-start justify-between mb-4 pr-16">
                 <h3 className="text-xl font-semibold text-white">{task.title}</h3>
                 <span
                   className={`px-3 py-1 rounded-full text-xs text-white ${

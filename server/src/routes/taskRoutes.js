@@ -18,6 +18,8 @@ router.delete('/templates/:id', taskController.deleteTemplate);
 
 router.get('/:id', taskController.getTaskById);
 router.put('/:id/start', taskController.startTask);
+router.put('/:id/archive', taskController.archiveTask);
+router.put('/:id/unarchive', taskController.unarchiveTask);
 router.delete('/:id', taskController.deleteTask);
 
 module.exports = router;

@@ -50,7 +50,7 @@ const taskSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: Object.values(TaskStatus),
-    default: TaskStatus.PENDING
+    default: TaskStatus.IN_PROGRESS
   },
   startedAt: {
     type: Date
@@ -152,6 +152,10 @@ const taskSchema = new mongoose.Schema({
     type: String,
     trim: true,
     maxlength: [100, '模板名称不能超过 100 字']
+  },
+  archived: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true
