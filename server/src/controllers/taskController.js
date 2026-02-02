@@ -97,7 +97,8 @@ exports.createTask = async (req, res, next) => {
       });
       await task.save();
 
-      // 锁定赌注（确保数字相加）
+      // 锁定赌注：从余额扣除并锁定（确保数字相加）
+      wallet.balance = Number(wallet.balance) - Number(betAmount);
       wallet.lockedAmount = Number(wallet.lockedAmount) + Number(betAmount);
       wallet.transactions.push({
         type: '任务锁定',
@@ -512,7 +513,8 @@ exports.createTaskFromTemplate = async (req, res, next) => {
       });
       await task.save();
 
-      // 锁定赌注（确保数字相加）
+      // 锁定赌注：从余额扣除并锁定（确保数字相加）
+      wallet.balance = Number(wallet.balance) - Number(template.betAmount);
       wallet.lockedAmount = Number(wallet.lockedAmount) + Number(template.betAmount);
       wallet.transactions.push({
         type: '任务锁定',
