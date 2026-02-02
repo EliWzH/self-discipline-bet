@@ -813,15 +813,49 @@ const SubmitEvidenceModal = ({ task, onClose, onSubmit }) => {
   const [description, setDescription] = useState('');
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
   const toast = useToast();
 
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length + images.length > 5) {
+  const handleFiles = (files) => {
+    const fileArray = Array.from(files);
+    const imageFiles = fileArray.filter(file => file.type.startsWith('image/'));
+
+    if (imageFiles.length !== fileArray.length) {
+      toast.error('只能上传图片文件');
+    }
+
+    if (imageFiles.length + images.length > 5) {
       toast.error('最多只能上传 5 张图片');
       return;
     }
-    setImages([...images, ...files]);
+
+    setImages([...images, ...imageFiles]);
+  };
+
+  const handleImageChange = (e) => {
+    handleFiles(e.target.files);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragOver(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFiles(e.dataTransfer.files);
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragOver(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragOver(false);
   };
 
   const removeImage = (index) => {
@@ -864,16 +898,36 @@ const SubmitEvidenceModal = ({ task, onClose, onSubmit }) => {
             <label className="block text-sm font-medium text-gray-300 mb-2">
               上传图片 * (最多 5 张)
             </label>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleImageChange}
-              className="w-full px-4 py-2 bg-dark-bg border border-dark-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <p className="text-gray-500 text-xs mt-1">
-              支持 JPG、PNG、WEBP 格式，每张最大 5MB
-            </p>
+
+            {/* 拖放上传区域 */}
+            <div
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
+                dragOver
+                  ? 'border-blue-500 bg-blue-500/10'
+                  : 'border-dark-border bg-dark-bg hover:border-blue-400'
+              }`}
+            >
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageChange}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+              <div className="pointer-events-none">
+                <div className="text-4xl mb-2">📁</div>
+                <p className="text-white mb-1">
+                  {dragOver ? '松开鼠标上传文件' : '拖放图片到这里'}
+                </p>
+                <p className="text-gray-400 text-sm mb-1">或点击选择文件</p>
+                <p className="text-gray-500 text-xs">
+                  支持 JPG、PNG、WEBP 格式，每张最大 5MB
+                </p>
+              </div>
+            </div>
           </div>
 
           {images.length > 0 && (
