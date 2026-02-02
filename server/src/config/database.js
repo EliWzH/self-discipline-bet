@@ -5,8 +5,13 @@ const connectDB = async () => {
   try {
     console.log('🔄 正在连接 MongoDB Atlas...');
     await mongoose.connect(config.mongodb.uri, {
-      serverSelectionTimeoutMS: 5000, // 5秒超时
-      socketTimeoutMS: 45000,
+      serverSelectionTimeoutMS: 10000, // 增加到 10 秒
+      socketTimeoutMS: 60000, // 增加到 60 秒
+      maxPoolSize: 10,
+      minPoolSize: 2,
+      maxIdleTimeMS: 30000,
+      retryWrites: true,
+      retryReads: true,
     });
     console.log('✅ MongoDB Atlas 连接成功');
   } catch (error) {

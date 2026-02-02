@@ -43,8 +43,11 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 if (process.env.NODE_ENV === 'production') {
   const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 分钟
-    max: 100,
-    message: '请求过于频繁，请稍后再试'
+    max: 1000, // 提高限制到 1000 次
+    message: '请求过于频繁，请稍后再试',
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: (req) => req.path === '/health'
   });
   app.use('/api/', limiter);
 }
