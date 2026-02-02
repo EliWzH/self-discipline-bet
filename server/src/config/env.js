@@ -7,8 +7,8 @@ module.exports = {
   jwt: {
     secret: process.env.JWT_SECRET,
     refreshSecret: process.env.JWT_REFRESH_SECRET,
-    accessExpiry: '15m',
-    refreshExpiry: '7d'
+    accessExpiry: '30d',  // 30天保持登录
+    refreshExpiry: '90d'  // 90天刷新token
   },
   claude: {
     apiKey: process.env.CLAUDE_API_KEY,
