@@ -11,9 +11,18 @@ exports.getWallet = async (req, res, next) => {
       return res.status(404).json({ error: '钱包不存在' });
     }
 
+    // 确保所有金额字段都是数字类型
+    const walletData = {
+      ...wallet.toObject(),
+      balance: Number(wallet.balance) || 0,
+      lockedAmount: Number(wallet.lockedAmount) || 0,
+      totalDeposited: Number(wallet.totalDeposited) || 0,
+      totalDonated: Number(wallet.totalDonated) || 0
+    };
+
     res.json({
       success: true,
-      wallet
+      wallet: walletData
     });
   } catch (error) {
     next(error);
@@ -40,8 +49,8 @@ exports.deposit = async (req, res, next) => {
       return res.status(404).json({ error: '钱包不存在' });
     }
 
-    wallet.balance += amount;
-    wallet.totalDeposited += amount;
+    wallet.balance = Number(wallet.balance) + Number(amount);
+    wallet.totalDeposited = Number(wallet.totalDeposited) + Number(amount);
     wallet.transactions.push({
       type: '充值',
       amount,

@@ -125,16 +125,18 @@ exports.getJudgementResult = async (req, res, next) => {
   }
 };
 
-// 获取待我审判的任务列表（包括进行中和已提交的，过滤掉失败的任务）
+// 获取待我审判的任务列表（包括进行中和已提交的，过滤掉失败和过期的任务）
 exports.getTasksToJudge = async (req, res, next) => {
   try {
     const judgeUserId = req.user._id;
+    const now = new Date();
 
-    // 获取所有我作为判决人的任务（进行中、已提交、待判决），排除失败和已存档的任务
+    // 获取所有我作为判决人的任务（进行中、已提交、待判决），排除失败、已存档和过期的任务
     const tasks = await Task.find({
       judgeUserId,
       status: { $ne: TaskStatus.FAILED }, // 排除失败的任务
       archived: { $ne: true }, // 排除已存档的任务
+      deadline: { $gte: now }, // 排除已过期的任务
       $or: [
         { status: TaskStatus.IN_PROGRESS },
         { status: TaskStatus.SUBMITTED, judgeStatus: 'pending' }
