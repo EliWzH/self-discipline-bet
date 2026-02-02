@@ -32,9 +32,9 @@ exports.submitEvidence = async (req, res, next) => {
 
     // 检查是否过期
     if (new Date() > new Date(task.deadline)) {
-      task.status = TaskStatus.EXPIRED;
+      task.status = TaskStatus.FAILED;
       await task.save();
-      return res.status(400).json({ error: '任务已过期' });
+      return res.status(400).json({ error: '任务已过期，无法提交证据' });
     }
 
     // 处理图片（压缩）
