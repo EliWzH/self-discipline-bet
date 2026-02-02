@@ -42,7 +42,10 @@ const taskSchema = new mongoose.Schema({
       validator: function(v) {
         // 如果没有截止时间（重复任务模板），跳过验证
         if (!v) return true;
-        return v > new Date();
+        // 允许截止时间在当前时间30秒之后（给网络延迟和时区差异留缓冲）
+        const now = new Date();
+        const minDeadline = new Date(now.getTime() - 30000); // 30秒前
+        return v > minDeadline;
       },
       message: '截止时间必须是未来时间'
     }
