@@ -6,7 +6,7 @@ import templateService from '../services/templateService';
 import { useToast } from '../contexts/ToastContext';
 import { useAuth } from '../contexts/AuthContext';
 import { STATUS_COLORS, TASK_CATEGORIES, TASK_STATUS } from '../utils/constants';
-import { formatDate, getTimeRemaining } from '../utils/dateFormatter';
+import { formatDate, getTimeRemaining, datetimeLocalToISO, getTomorrowEndOfDay } from '../utils/dateFormatter';
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([]);
@@ -513,6 +513,21 @@ const CreateTaskModal = ({ onClose, onCreate, onCreateTemplate, friends, templat
         };
         // 重复任务不需要 deadline
         delete taskData.deadline;
+      } else if (formData.deadline) {
+        // 普通任务：确认截止时间
+        const deadlineDate = new Date(formData.deadline);
+        const formatted = formatDate(deadlineDate.toISOString());
+        const confirmed = window.confirm(
+          `确认任务截止时间为：\n${formatted}\n\n点击"确定"创建任务`
+        );
+
+        if (!confirmed) {
+          setLoading(false);
+          return;
+        }
+
+        // 转换为 ISO 字符串
+        taskData.deadline = datetimeLocalToISO(formData.deadline);
       }
 
       await onCreate(taskData);
@@ -642,15 +657,20 @@ const CreateTaskModal = ({ onClose, onCreate, onCreateTemplate, friends, templat
           {!saveAsTemplate && repeatType === 'none' && (
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                截止时间 *
+                截止时间 * (本地时间)
               </label>
               <input
                 type="datetime-local"
-                value={formData.deadline}
+                value={formData.deadline || getTomorrowEndOfDay()}
                 onChange={(e) => setFormData({ ...formData, deadline: e.target.value })}
                 required={repeatType === 'none'}
                 className="w-full px-4 py-2 bg-dark-bg border border-dark-border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+              {formData.deadline && (
+                <p className="text-gray-400 text-xs mt-1">
+                  将设置为：{formatDate(new Date(formData.deadline).toISOString())}
+                </p>
+              )}
             </div>
           )}
 
