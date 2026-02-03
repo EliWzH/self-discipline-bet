@@ -19,6 +19,7 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
+  'https://self-discipline-bet-frontend.onrender.com',
   process.env.CLIENT_URL
 ].filter(Boolean);
 
@@ -30,8 +31,13 @@ app.use(cors({
       callback(new Error('不允许的来源'));
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// 处理所有OPTIONS预检请求
+app.options('*', cors());
 
 // Body 解析
 app.use(express.json());
