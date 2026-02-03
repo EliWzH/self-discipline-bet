@@ -1,5 +1,14 @@
 const Task = require('../models/Task');
 const Wallet = require('../models/Wallet');
+const dayjs = require('dayjs');
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+// 用户时区
+const USER_TIMEZONE = 'America/Toronto';
 
 // 清理过去日期的重复任务实例
 exports.cleanPastTasks = async (req, res, next) => {
@@ -110,15 +119,26 @@ exports.updateTaskDeadlines = async (req, res, next) => {
 
     // 更新每个实例的截止时间
     for (const task of instances) {
-      const oldDeadline = new Date(task.deadline);
+      // 获取原截止时间在用户时区的日期
+      const oldDeadlineUserTZ = dayjs(task.deadline).tz(USER_TIMEZONE);
+
+      // 解析新时间
       const [hours, minutes] = newTime.split(':');
-      const newDeadline = new Date(oldDeadline);
-      newDeadline.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+
+      // 在用户时区的同一天设置新时间
+      const newDeadlineUserTZ = oldDeadlineUserTZ
+        .hour(parseInt(hours))
+        .minute(parseInt(minutes))
+        .second(0)
+        .millisecond(0);
+
+      // 转换为 UTC 存储
+      const newDeadline = newDeadlineUserTZ.utc().toDate();
 
       updates.push({
-        date: oldDeadline.toLocaleDateString(),
-        oldTime: oldDeadline.toLocaleTimeString(),
-        newTime: newDeadline.toLocaleTimeString()
+        date: oldDeadlineUserTZ.format('YYYY/M/D'),
+        oldTime: oldDeadlineUserTZ.format('HH:mm'),
+        newTime: newDeadlineUserTZ.format('HH:mm')
       });
 
       task.deadline = newDeadline;

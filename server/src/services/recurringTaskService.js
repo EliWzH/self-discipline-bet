@@ -1,4 +1,13 @@
 const Task = require('../models/Task');
+const dayjs = require('dayjs');
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+// 用户时区（暂时硬编码，未来可以从用户配置读取）
+const USER_TIMEZONE = 'America/Toronto';
 
 /**
  * 为指定用户生成今日待办实例
@@ -18,19 +27,17 @@ const generatePendingInstances = async (userId) => {
 
     if (!templates.length) return newInstances;
 
-    // 计算今天的时间范围（00:00 ~ 23:59:59）
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayEnd = new Date(today);
-    todayEnd.setHours(23, 59, 59, 999);
-
-    const todayWeekday = today.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+    // 计算今天的时间范围（用户时区）
+    const todayUserTZ = dayjs().tz(USER_TIMEZONE);
+    const todayStart = todayUserTZ.startOf('day');
+    const todayEnd = todayUserTZ.endOf('day');
+    const todayWeekday = todayUserTZ.day(); // 0=Sun, 1=Mon, ..., 6=Sat
 
     for (const template of templates) {
       const { frequency, daysOfWeek, startTime, endDate, occurrences } = template.recurrence;
 
       // 检查是否已达到结束日期
-      if (endDate && today > new Date(endDate)) {
+      if (endDate && todayStart.isAfter(dayjs(endDate).tz(USER_TIMEZONE))) {
         continue;
       }
 
@@ -60,11 +67,18 @@ const generatePendingInstances = async (userId) => {
 
       if (!shouldGenerate) continue;
 
-      // 原子 upsert：只根据 lastErrorObject.upserted 判断新建
+      // 解析 startTime 并在用户时区设置时间
       const [hours, minutes] = startTime.split(':');
-      const deadline = new Date(today);
-      deadline.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+      const deadlineUserTZ = todayUserTZ
+        .hour(parseInt(hours))
+        .minute(parseInt(minutes))
+        .second(0)
+        .millisecond(0);
 
+      // 转换为 UTC 存储
+      const deadline = deadlineUserTZ.utc().toDate();
+
+      // 原子 upsert
       const result = await Task.findOneAndUpdate(
         {
           userId,
@@ -122,29 +136,29 @@ const generateInstancesForDateRange = async (userId, startDate, endDate) => {
 
     if (!templates.length) return newInstances;
 
-    // 获取今天的开始时间（00:00:00）
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    // 获取今天的开始时间（用户时区）
+    const todayUserTZ = dayjs().tz(USER_TIMEZONE).startOf('day');
 
     // 遍历日期范围，但只为今天及以后的日期生成实例
-    const currentDate = new Date(startDate);
-    while (currentDate <= endDate) {
-      const dayStart = new Date(currentDate);
-      dayStart.setHours(0, 0, 0, 0);
+    let currentDate = dayjs(startDate).tz(USER_TIMEZONE);
+    const end = dayjs(endDate).tz(USER_TIMEZONE);
+
+    while (currentDate.isBefore(end) || currentDate.isSame(end, 'day')) {
+      const dayStart = currentDate.startOf('day');
 
       // 跳过过去的日期
-      if (dayStart < today) {
-        currentDate.setDate(currentDate.getDate() + 1);
+      if (dayStart.isBefore(todayUserTZ)) {
+        currentDate = currentDate.add(1, 'day');
         continue;
       }
 
-      const dayWeekday = dayStart.getDay();
+      const dayWeekday = currentDate.day();
 
       for (const template of templates) {
         const { frequency, daysOfWeek, startTime, endDate: recurEndDate, occurrences } = template.recurrence;
 
         // 检查是否已达到结束日期
-        if (recurEndDate && dayStart > new Date(recurEndDate)) {
+        if (recurEndDate && currentDate.isAfter(dayjs(recurEndDate).tz(USER_TIMEZONE))) {
           continue;
         }
 
@@ -173,11 +187,18 @@ const generateInstancesForDateRange = async (userId, startDate, endDate) => {
 
         if (!shouldGenerate) continue;
 
-        // 原子 upsert
+        // 解析 startTime 并在用户时区设置时间
         const [hours, minutes] = startTime.split(':');
-        const deadline = new Date(dayStart);
-        deadline.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+        const deadlineUserTZ = currentDate
+          .hour(parseInt(hours))
+          .minute(parseInt(minutes))
+          .second(0)
+          .millisecond(0);
 
+        // 转换为 UTC 存储
+        const deadline = deadlineUserTZ.utc().toDate();
+
+        // 原子 upsert
         const result = await Task.findOneAndUpdate(
           {
             userId,
@@ -209,7 +230,7 @@ const generateInstancesForDateRange = async (userId, startDate, endDate) => {
       }
 
       // 下一天
-      currentDate.setDate(currentDate.getDate() + 1);
+      currentDate = currentDate.add(1, 'day');
     }
 
     return newInstances;
