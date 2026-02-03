@@ -24,12 +24,12 @@ const Dashboard = () => {
       const [statsData, walletData, tasksData] = await Promise.all([
         taskService.getStats(),
         walletService.getWallet(),
-        taskService.getTasks()
+        taskService.getTasks({ today: 'true' }) // 只获取今天的任务
       ]);
 
       setStats(statsData);
       setWallet(walletData);
-      setRecentTasks(tasksData.slice(0, 5));
+      setRecentTasks(tasksData); // 不需要slice，后端已经按截止时间排序
     } catch (error) {
       console.error('获取数据失败:', error);
     } finally {
@@ -104,12 +104,12 @@ const Dashboard = () => {
 
         {recentTasks.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-400 mb-4">还没有任务</p>
+            <p className="text-gray-400 mb-4">今天没有任务</p>
             <Link
               to="/tasks"
               className="inline-block px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
             >
-              创建第一个任务
+              创建任务
             </Link>
           </div>
         ) : (

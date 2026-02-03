@@ -126,7 +126,7 @@ exports.createTask = async (req, res, next) => {
 exports.getTasks = async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const { status, category, month } = req.query;
+    const { status, category, month, today } = req.query;
 
     let newInstances = [];
 
@@ -174,18 +174,29 @@ exports.getTasks = async (req, res, next) => {
     if (status) filter.status = status;
     if (category) filter.category = category;
 
+    // 支持"今天"筛选（格式: today=true）
+    if (today === 'true') {
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      const todayEnd = new Date();
+      todayEnd.setHours(23, 59, 59, 999);
+      filter.deadline = { $gte: todayStart, $lte: todayEnd };
+    }
     // 支持按月份过滤（格式: YYYY-MM）
-    if (month) {
+    else if (month) {
       const [year, monthNum] = month.split('-').map(Number);
       const startDate = new Date(year, monthNum - 1, 1);
       const endDate = new Date(year, monthNum, 0, 23, 59, 59, 999);
       filter.deadline = { $gte: startDate, $lte: endDate };
     }
 
+    // 根据筛选条件决定排序方式
+    const sortBy = today === 'true' ? { deadline: 1 } : { createdAt: -1 };
+
     const tasks = await Task.find(filter)
       .populate('evidence')
       .populate('judgeUserId', 'username email')
-      .sort({ createdAt: -1 });
+      .sort(sortBy);
 
     // 收集所有 parentTaskId 并去重
     const parentIds = [...new Set(
