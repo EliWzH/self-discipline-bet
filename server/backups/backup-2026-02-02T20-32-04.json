@@ -1,0 +1,403 @@
+{
+  "timestamp": "2026-02-02T20:32:05.593Z",
+  "counts": {
+    "users": 13,
+    "tasks": 0,
+    "wallets": 12,
+    "evidences": 0
+  },
+  "data": {
+    "users": [
+      {
+        "_id": "697e691efb8818ba5d97424d",
+        "email": "test@example.com",
+        "password": "$2a$12$SuYZefYmNhqbLRpiawWQn.eoV49vQv5JcFe/r48bCsdxzLwrieGEG",
+        "username": "测试用户",
+        "createdAt": "2026-01-31T20:42:06.337Z",
+        "updatedAt": "2026-01-31T20:42:06.794Z",
+        "__v": 0,
+        "wallet": "697e691efb8818ba5d97424f"
+      },
+      {
+        "_id": "697e6c26c709655b8cc9c4b0",
+        "email": "test2@example.com",
+        "password": "$2a$10$zxbWAEsRcy3YAWLwhmJP2OvOf82xXsWWL5XqM3Fk4HdlU/DwIdGg6",
+        "username": "测试2",
+        "createdAt": "2026-01-31T20:55:02.656Z",
+        "updatedAt": "2026-01-31T20:55:02.656Z",
+        "__v": 0
+      },
+      {
+        "_id": "697e6c5dee5fd2219795e50b",
+        "email": "newuser@example.com",
+        "password": "$2a$10$tzy46VDFhy47gRvhpB8NBu01Odsuof1kglsvZtBldPRpt9Mp6oOMy",
+        "username": "新用户",
+        "createdAt": "2026-01-31T20:55:57.494Z",
+        "updatedAt": "2026-01-31T20:55:57.758Z",
+        "__v": 0,
+        "wallet": "697e6c5dee5fd2219795e50d"
+      },
+      {
+        "_id": "697e6cacee5fd2219795e512",
+        "email": "cors@test.com",
+        "password": "$2a$10$0IT7n6EZUjQofNkl0ejZxO1LTW9S/5Cqrz/8CTB1WRTEh0IUt18ZC",
+        "username": "CORS测试",
+        "createdAt": "2026-01-31T20:57:16.340Z",
+        "updatedAt": "2026-01-31T20:57:16.535Z",
+        "__v": 0,
+        "wallet": "697e6cacee5fd2219795e514"
+      },
+      {
+        "_id": "697e6d3eee5fd2219795e519",
+        "email": "wangzhenghao16@gmail.com",
+        "password": "$2a$10$pLn6jF8/dLuwLtN91FuLFuyp0MbQmS12HOWmANWqd1zsq9Xo0lpQa",
+        "username": "ZH",
+        "createdAt": "2026-01-31T20:59:42.223Z",
+        "updatedAt": "2026-02-02T19:16:27.154Z",
+        "__v": 1,
+        "wallet": "697e6d3eee5fd2219795e51b",
+        "friends": [
+          "6980c4852fcf36b1e66b5217"
+        ],
+        "lastLogin": "2026-02-02T19:16:27.149Z"
+      },
+      {
+        "_id": "697e6d76ee5fd2219795e520",
+        "email": "niyouqian021@gmail.com",
+        "password": "$2a$10$eCy.nDz/7x0Nk6QP4ODL/el6hws83m/UZG/VUqmR/KdVH5Kw0Up3u",
+        "username": "eli",
+        "createdAt": "2026-01-31T21:00:38.617Z",
+        "updatedAt": "2026-02-02T17:32:58.444Z",
+        "__v": 1,
+        "wallet": "697e6d76ee5fd2219795e522",
+        "lastLogin": "2026-02-02T17:32:58.442Z",
+        "friends": []
+      },
+      {
+        "_id": "697f7a5cbf5239496cfd41cc",
+        "email": "test999@test.com",
+        "password": "$2a$10$TeYFOvnHe/lDnSHT0KMk.eqejPT0NolBqHCb4B3gSz.J7Ho/TXbYO",
+        "username": "testuser",
+        "friends": [],
+        "createdAt": "2026-02-01T16:07:56.561Z",
+        "updatedAt": "2026-02-01T16:07:56.776Z",
+        "__v": 0,
+        "wallet": "697f7a5cbf5239496cfd41ce"
+      },
+      {
+        "_id": "697f952179ea958d9393126b",
+        "email": "test@test.com",
+        "password": "$2a$10$VM.dkD5Adshx99l9GcjFAeIxpQsjPf0r5.xnm8O1d8kdX0qdBFL6G",
+        "username": "testuser",
+        "friends": [],
+        "createdAt": "2026-02-01T18:02:09.891Z",
+        "updatedAt": "2026-02-01T18:02:10.095Z",
+        "__v": 0,
+        "wallet": "697f952279ea958d939312b8"
+      },
+      {
+        "_id": "697f953479ea958d93933682",
+        "email": "test2@test.com",
+        "password": "$2a$10$7iHRGTWIZ7Ce9jpS5YUDeOT/uT5GtC3Yy.o5TgsCgi.PBXl0I7kVq",
+        "username": "testuser2",
+        "friends": [],
+        "createdAt": "2026-02-01T18:02:28.915Z",
+        "updatedAt": "2026-02-01T18:52:54.240Z",
+        "__v": 0,
+        "wallet": "697f953579ea958d939336d5",
+        "lastLogin": "2026-02-01T18:52:54.240Z"
+      },
+      {
+        "_id": "697fa08b83acc07eb81f8630",
+        "email": "testrecurring@test.com",
+        "password": "$2a$10$i6qf8ax/eRk2LWlXfh0pBeGIsS9Ji.8xznud8RtEESp35UL6fKyAO",
+        "username": "testuser",
+        "friends": [],
+        "createdAt": "2026-02-01T18:50:51.775Z",
+        "updatedAt": "2026-02-01T18:50:52.013Z",
+        "__v": 0,
+        "wallet": "697fa08b83acc07eb81f8632"
+      },
+      {
+        "_id": "697fa0b683acc07eb81f8637",
+        "email": "testrecurring2@test.com",
+        "password": "$2a$10$4y6.3TwrQgLQ3IHME53jcOQQ4kG6yVahb..4sSe8XFKnb5o2.BR86",
+        "username": "testuser2",
+        "friends": [],
+        "createdAt": "2026-02-01T18:51:34.270Z",
+        "updatedAt": "2026-02-01T18:51:34.462Z",
+        "__v": 0,
+        "wallet": "697fa0b683acc07eb81f8639"
+      },
+      {
+        "_id": "6980ad21e9604dd964e8740c",
+        "email": "user1770040609@example.com",
+        "password": "$2a$10$joGX9rTiJ05nSEhvIZaYseg4ZTfL7UzndsktNYq6dV0f9/BjQoc.G",
+        "username": "测试0856",
+        "friends": [],
+        "createdAt": "2026-02-02T13:56:49.188Z",
+        "updatedAt": "2026-02-02T13:56:49.451Z",
+        "__v": 0,
+        "wallet": "6980ad21e9604dd964e8740e"
+      },
+      {
+        "_id": "6980c4852fcf36b1e66b5217",
+        "email": "vitokang@outlook.com",
+        "password": "$2a$10$6uGV20abfRwJohf89oDQZOqN3FtfosbbYLi3N0V80fvMHdF/MxDz2",
+        "username": "Vito",
+        "friends": [
+          "697e6d3eee5fd2219795e519"
+        ],
+        "createdAt": "2026-02-02T15:36:37.396Z",
+        "updatedAt": "2026-02-02T20:11:11.955Z",
+        "__v": 0,
+        "wallet": "6980c4862fcf36b1e66b5219",
+        "lastLogin": "2026-02-02T20:11:11.951Z"
+      }
+    ],
+    "tasks": [],
+    "wallets": [
+      {
+        "_id": "697e691efb8818ba5d97424f",
+        "userId": "697e691efb8818ba5d97424d",
+        "balance": 1000,
+        "lockedAmount": 0,
+        "totalDeposited": 1000,
+        "totalDonated": 0,
+        "transactions": [
+          {
+            "type": "充值",
+            "amount": 1000,
+            "description": "系统重置 - 初始余额",
+            "timestamp": "2026-02-02T18:03:35.236Z",
+            "_id": "6980e6f7c9a5efa392a69f7c"
+          }
+        ],
+        "createdAt": "2026-01-31T20:42:06.679Z",
+        "updatedAt": "2026-02-02T18:03:35.238Z",
+        "__v": 2
+      },
+      {
+        "_id": "697e6c5dee5fd2219795e50d",
+        "userId": "697e6c5dee5fd2219795e50b",
+        "balance": 1000,
+        "lockedAmount": 0,
+        "totalDeposited": 1000,
+        "totalDonated": 0,
+        "transactions": [
+          {
+            "type": "充值",
+            "amount": 1000,
+            "description": "系统重置 - 初始余额",
+            "timestamp": "2026-02-02T18:03:35.329Z",
+            "_id": "6980e6f7c9a5efa392a69f7e"
+          }
+        ],
+        "createdAt": "2026-01-31T20:55:57.687Z",
+        "updatedAt": "2026-02-02T18:03:35.329Z",
+        "__v": 2
+      },
+      {
+        "_id": "697e6cacee5fd2219795e514",
+        "userId": "697e6cacee5fd2219795e512",
+        "balance": 1000,
+        "lockedAmount": 0,
+        "totalDeposited": 1000,
+        "totalDonated": 0,
+        "transactions": [
+          {
+            "type": "充值",
+            "amount": 1000,
+            "description": "系统重置 - 初始余额",
+            "timestamp": "2026-02-02T18:03:35.418Z",
+            "_id": "6980e6f7c9a5efa392a69f81"
+          }
+        ],
+        "createdAt": "2026-01-31T20:57:16.472Z",
+        "updatedAt": "2026-02-02T18:03:35.418Z",
+        "__v": 2
+      },
+      {
+        "_id": "697e6d3eee5fd2219795e51b",
+        "userId": "697e6d3eee5fd2219795e519",
+        "balance": 1000,
+        "lockedAmount": 0,
+        "totalDeposited": 1000,
+        "totalDonated": 0,
+        "transactions": [
+          {
+            "type": "充值",
+            "amount": 1000,
+            "description": "系统重置 - 初始余额",
+            "timestamp": "2026-02-02T18:03:35.515Z",
+            "_id": "6980e6f7c9a5efa392a69f84"
+          }
+        ],
+        "createdAt": "2026-01-31T20:59:42.356Z",
+        "updatedAt": "2026-02-02T18:03:35.515Z",
+        "__v": 14
+      },
+      {
+        "_id": "697e6d76ee5fd2219795e522",
+        "userId": "697e6d76ee5fd2219795e520",
+        "balance": 1000,
+        "lockedAmount": 0,
+        "totalDeposited": 1000,
+        "totalDonated": 0,
+        "transactions": [
+          {
+            "type": "充值",
+            "amount": 1000,
+            "description": "系统重置 - 初始余额",
+            "timestamp": "2026-02-02T18:03:35.604Z",
+            "_id": "6980e6f7c9a5efa392a69f87"
+          }
+        ],
+        "createdAt": "2026-01-31T21:00:38.806Z",
+        "updatedAt": "2026-02-02T18:03:35.605Z",
+        "__v": 24
+      },
+      {
+        "_id": "697f7a5cbf5239496cfd41ce",
+        "userId": "697f7a5cbf5239496cfd41cc",
+        "balance": 1000,
+        "lockedAmount": 0,
+        "totalDeposited": 1000,
+        "totalDonated": 0,
+        "transactions": [
+          {
+            "type": "充值",
+            "amount": 1000,
+            "description": "系统重置 - 初始余额",
+            "timestamp": "2026-02-02T18:03:36.143Z",
+            "_id": "6980e6f8c9a5efa392a69f89"
+          }
+        ],
+        "createdAt": "2026-02-01T16:07:56.702Z",
+        "updatedAt": "2026-02-02T18:03:36.144Z",
+        "__v": 2
+      },
+      {
+        "_id": "697f952279ea958d939312b8",
+        "userId": "697f952179ea958d9393126b",
+        "balance": 1000,
+        "lockedAmount": 0,
+        "totalDeposited": 1000,
+        "totalDonated": 0,
+        "transactions": [
+          {
+            "type": "充值",
+            "amount": 1000,
+            "description": "系统重置 - 初始余额",
+            "timestamp": "2026-02-02T18:03:36.233Z",
+            "_id": "6980e6f8c9a5efa392a69f8c"
+          }
+        ],
+        "createdAt": "2026-02-01T18:02:10.033Z",
+        "updatedAt": "2026-02-02T18:03:36.234Z",
+        "__v": 2
+      },
+      {
+        "_id": "697f953579ea958d939336d5",
+        "userId": "697f953479ea958d93933682",
+        "balance": 1000,
+        "lockedAmount": 0,
+        "totalDeposited": 1000,
+        "totalDonated": 0,
+        "transactions": [
+          {
+            "type": "充值",
+            "amount": 1000,
+            "description": "系统重置 - 初始余额",
+            "timestamp": "2026-02-02T18:03:36.323Z",
+            "_id": "6980e6f8c9a5efa392a69f8f"
+          }
+        ],
+        "createdAt": "2026-02-01T18:02:29.044Z",
+        "updatedAt": "2026-02-02T18:03:36.323Z",
+        "__v": 2
+      },
+      {
+        "_id": "697fa08b83acc07eb81f8632",
+        "userId": "697fa08b83acc07eb81f8630",
+        "balance": 1000,
+        "lockedAmount": 0,
+        "totalDeposited": 1000,
+        "totalDonated": 0,
+        "transactions": [
+          {
+            "type": "充值",
+            "amount": 1000,
+            "description": "系统重置 - 初始余额",
+            "timestamp": "2026-02-02T18:03:36.413Z",
+            "_id": "6980e6f8c9a5efa392a69f91"
+          }
+        ],
+        "createdAt": "2026-02-01T18:50:51.950Z",
+        "updatedAt": "2026-02-02T18:03:36.413Z",
+        "__v": 2
+      },
+      {
+        "_id": "697fa0b683acc07eb81f8639",
+        "userId": "697fa0b683acc07eb81f8637",
+        "balance": 1000,
+        "lockedAmount": 0,
+        "totalDeposited": 1000,
+        "totalDonated": 0,
+        "transactions": [
+          {
+            "type": "充值",
+            "amount": 1000,
+            "description": "系统重置 - 初始余额",
+            "timestamp": "2026-02-02T18:03:36.502Z",
+            "_id": "6980e6f8c9a5efa392a69f93"
+          }
+        ],
+        "createdAt": "2026-02-01T18:51:34.399Z",
+        "updatedAt": "2026-02-02T18:03:36.502Z",
+        "__v": 2
+      },
+      {
+        "_id": "6980ad21e9604dd964e8740e",
+        "userId": "6980ad21e9604dd964e8740c",
+        "balance": 1000,
+        "lockedAmount": 0,
+        "totalDeposited": 1000,
+        "totalDonated": 0,
+        "transactions": [
+          {
+            "type": "充值",
+            "amount": 1000,
+            "description": "系统重置 - 初始余额",
+            "timestamp": "2026-02-02T18:03:37.141Z",
+            "_id": "6980e6f9c9a5efa392a69f95"
+          }
+        ],
+        "createdAt": "2026-02-02T13:56:49.353Z",
+        "updatedAt": "2026-02-02T18:03:37.141Z",
+        "__v": 2
+      },
+      {
+        "_id": "6980c4862fcf36b1e66b5219",
+        "userId": "6980c4852fcf36b1e66b5217",
+        "balance": 1000,
+        "lockedAmount": 0,
+        "totalDeposited": 1000,
+        "totalDonated": 0,
+        "transactions": [
+          {
+            "type": "充值",
+            "amount": 1000,
+            "description": "系统重置 - 初始余额",
+            "timestamp": "2026-02-02T18:03:37.232Z",
+            "_id": "6980e6f9c9a5efa392a69f97"
+          }
+        ],
+        "createdAt": "2026-02-02T15:36:38.045Z",
+        "updatedAt": "2026-02-02T18:03:37.232Z",
+        "__v": 3
+      }
+    ],
+    "evidences": []
+  }
+}
