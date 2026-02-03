@@ -30,7 +30,24 @@ const userSchema = new mongoose.Schema({
   friends: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
-  }]
+  }],
+  timezone: {
+    type: String,
+    default: null,
+    validate: {
+      validator: function(v) {
+        if (!v) return true; // null is allowed
+        // Validate IANA timezone (basic check)
+        try {
+          Intl.DateTimeFormat(undefined, { timeZone: v });
+          return true;
+        } catch (e) {
+          return false;
+        }
+      },
+      message: props => `${props.value} 不是有效的时区`
+    }
+  }
 }, {
   timestamps: true
 });

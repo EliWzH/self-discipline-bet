@@ -5,7 +5,7 @@ const { generateAccessToken, generateRefreshToken, verifyRefreshToken } = requir
 // 注册
 exports.register = async (req, res, next) => {
   try {
-    const { email, password, username } = req.body;
+    const { email, password, username, timezone } = req.body;
 
     // 验证必填字段
     if (!email || !password || !username) {
@@ -18,8 +18,13 @@ exports.register = async (req, res, next) => {
       return res.status(400).json({ error: '邮箱已被注册' });
     }
 
-    // 创建用户
-    const user = new User({ email, password, username });
+    // 创建用户（包含时区，可为 null）
+    const user = new User({
+      email,
+      password,
+      username,
+      timezone: timezone || null
+    });
     await user.save();
 
     // 创建钱包
@@ -55,7 +60,7 @@ exports.register = async (req, res, next) => {
 // 登录
 exports.login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, timezone } = req.body;
 
     // 验证必填字段
     if (!email || !password) {
@@ -74,8 +79,11 @@ exports.login = async (req, res, next) => {
       return res.status(401).json({ error: '邮箱或密码错误' });
     }
 
-    // 更新最后登录时间
+    // 更新最后登录时间和时区
     user.lastLogin = new Date();
+    if (timezone && timezone !== user.timezone) {
+      user.timezone = timezone;
+    }
     await user.save();
 
     // 生成 token

@@ -1,13 +1,11 @@
 const Task = require('../models/Task');
+const User = require('../models/User');
 const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone');
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
-
-// 用户时区（暂时硬编码，未来可以从用户配置读取）
-const USER_TIMEZONE = 'America/Toronto';
 
 /**
  * 为指定用户生成今日待办实例
@@ -18,6 +16,10 @@ const generatePendingInstances = async (userId) => {
   const newInstances = [];
 
   try {
+    // 获取用户时区（如果未设置则使用 UTC）
+    const user = await User.findById(userId);
+    const userTimezone = user?.timezone || 'UTC';
+
     // 查询该用户的所有模板任务
     const templates = await Task.find({
       userId,
@@ -28,7 +30,7 @@ const generatePendingInstances = async (userId) => {
     if (!templates.length) return newInstances;
 
     // 计算今天的时间范围（用户时区）
-    const todayUserTZ = dayjs().tz(USER_TIMEZONE);
+    const todayUserTZ = dayjs().tz(userTimezone);
     const todayStart = todayUserTZ.startOf('day');
     const todayEnd = todayUserTZ.endOf('day');
     const todayWeekday = todayUserTZ.day(); // 0=Sun, 1=Mon, ..., 6=Sat
@@ -127,6 +129,10 @@ const generateInstancesForDateRange = async (userId, startDate, endDate) => {
   const newInstances = [];
 
   try {
+    // 获取用户时区（如果未设置则使用 UTC）
+    const user = await User.findById(userId);
+    const userTimezone = user?.timezone || 'UTC';
+
     // 查询该用户的所有模板任务
     const templates = await Task.find({
       userId,
@@ -137,7 +143,7 @@ const generateInstancesForDateRange = async (userId, startDate, endDate) => {
     if (!templates.length) return newInstances;
 
     // 获取今天的开始时间（用户时区）
-    const todayUserTZ = dayjs().tz(USER_TIMEZONE).startOf('day');
+    const todayUserTZ = dayjs().tz(userTimezone).startOf('day');
 
     // 遍历日期范围，但只为今天及以后的日期生成实例
     let currentDate = dayjs(startDate).tz(USER_TIMEZONE);
