@@ -11,6 +11,7 @@ const walletRoutes = require('./routes/walletRoutes');
 const evidenceRoutes = require('./routes/evidenceRoutes');
 const judgementRoutes = require('./routes/judgementRoutes');
 const friendRoutes = require('./routes/friendRoutes');
+const maintenanceRoutes = require('./routes/maintenanceRoutes');
 
 const app = express();
 
@@ -64,6 +65,7 @@ app.use('/api/wallet', walletRoutes);
 app.use('/api/evidence', evidenceRoutes);
 app.use('/api/judgement', judgementRoutes);
 app.use('/api/friends', friendRoutes);
+app.use('/api/maintenance', maintenanceRoutes);
 
 // 404 处理
 app.use((req, res) => {
