@@ -122,11 +122,22 @@ const generateInstancesForDateRange = async (userId, startDate, endDate) => {
 
     if (!templates.length) return newInstances;
 
-    // 遍历日期范围
+    // 获取今天的开始时间（00:00:00）
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // 遍历日期范围，但只为今天及以后的日期生成实例
     const currentDate = new Date(startDate);
     while (currentDate <= endDate) {
       const dayStart = new Date(currentDate);
       dayStart.setHours(0, 0, 0, 0);
+
+      // 跳过过去的日期
+      if (dayStart < today) {
+        currentDate.setDate(currentDate.getDate() + 1);
+        continue;
+      }
+
       const dayWeekday = dayStart.getDay();
 
       for (const template of templates) {
