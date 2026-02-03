@@ -23,7 +23,7 @@ const allowedOrigins = [
   process.env.CLIENT_URL
 ].filter(Boolean);
 
-app.use(cors({
+const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -34,10 +34,12 @@ app.use(cors({
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
-}));
+};
+
+app.use(cors(corsOptions));
 
 // 处理所有OPTIONS预检请求
-app.options('*', cors());
+app.options('*', cors(corsOptions));
 
 // Body 解析
 app.use(express.json());
